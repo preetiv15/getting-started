@@ -16,7 +16,10 @@ public class myroute extends RouteBuilder {
                 .to("direct:getUser")
 
                 .post()
-                .to("direct:addUser");
+                .to("direct:addUser")
+
+                .put()
+                .to("direct:updateUser");
 
         from("direct:addUser")
                 .log("${body}")
@@ -27,6 +30,12 @@ public class myroute extends RouteBuilder {
         from("direct:getUser")
                 .log("Inside get user")
                 .setBody(simple("Select * from employee")).to("jdbc:default");
+        from("direct:updateUser")
+                .log("${body}")
+                .setBody().simple("Update employee SET empId = '${body[empId]}', empName= '${body[empName]}'")
+                .log("inside updateuser")
+                .to("jdbc:default")
+                .log("Updated camel: ${messageTimestamp}");
     }
     
 }
